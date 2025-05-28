@@ -4,21 +4,62 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Сайт Абдурахмона</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
   <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
     body {
-      background: #111;
-      color: #0ff;
-      font-family: Arial, sans-serif;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(to right, #0f0c29, #302b63, #24243e);
+      color: #00fff7;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
       text-align: center;
-      padding-top: 100px;
+      padding: 20px;
     }
     h1 {
-      font-size: 2.5rem;
+      font-size: 3rem;
+      margin-bottom: 20px;
+      text-shadow: 0 0 15px #00fff7;
+    }
+    p {
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+    }
+    .button {
+      background: #00fff7;
+      color: #111;
+      border: none;
+      padding: 12px 24px;
+      border-radius: 10px;
+      font-size: 1rem;
+      cursor: pointer;
+      box-shadow: 0 0 20px #00fff7;
+      transition: all 0.3s ease;
+    }
+    .button:hover {
+      background: #0ff;
+      transform: scale(1.05);
+    }
+    footer {
+      margin-top: 40px;
+      color: #888;
+      font-size: 0.9rem;
     }
   </style>
 </head>
 <body>
-  <h1>Привет, мир!</h1>
-  <p>Это мой первый сайт на GitHub Pages 🚀</p>
+  <h1>Привет, я Абдурахмон 👋</h1>
+  <p>Это мой первый стильный сайт на GitHub Pages!</p>
+  <a href="https://t.me/yourusername" target="_blank">
+    <button class="button">Связаться в Telegram</button>
+  </a>
+  <footer>© 2025 Абдурахмон. Сделано с ❤️</footer>
 </body>
 </html>
