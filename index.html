@@ -2,33 +2,42 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Магазин Абдурахмона</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" rel="stylesheet">
   <style>
+    * {
+      box-sizing: border-box;
+      font-family: 'Rubik', sans-serif;
+    }
     body {
-      font-family: Arial, sans-serif;
-      background: #f5f5f5;
+      background: linear-gradient(135deg, #f0f0f0, #e2f0ff);
       margin: 0;
       padding: 0;
     }
     header {
       background: #111;
       color: white;
-      padding: 20px;
+      padding: 30px;
       text-align: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.2);
     }
     .products {
       display: grid;
       grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
       gap: 20px;
-      padding: 20px;
+      padding: 30px;
     }
     .product {
       background: white;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      border-radius: 12px;
+      box-shadow: 0 0 15px rgba(0,0,0,0.1);
       padding: 20px;
       text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .product:hover {
+      transform: scale(1.03);
     }
     .product img {
       width: 100%;
@@ -37,19 +46,23 @@
       border-radius: 10px;
     }
     .product h3 {
-      margin: 10px 0;
+      margin: 10px 0 5px;
     }
     .product p {
       color: #333;
     }
     .product button {
-      background: #111;
+      background: #007bff;
       color: white;
       border: none;
       padding: 10px 15px;
       margin-top: 10px;
       cursor: pointer;
       border-radius: 5px;
+      transition: background 0.3s ease;
+    }
+    .product button:hover {
+      background: #0056b3;
     }
     .cart {
       position: fixed;
@@ -57,8 +70,27 @@
       right: 20px;
       background: #111;
       color: white;
-      padding: 15px;
+      padding: 15px 20px;
       border-radius: 10px;
+      font-size: 16px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+      z-index: 999;
+    }
+    .checkout {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: #28a745;
+      color: white;
+      padding: 15px 25px;
+      border-radius: 10px;
+      font-size: 18px;
+      border: none;
+      cursor: pointer;
+      transition: background 0.3s ease;
+    }
+    .checkout:hover {
+      background: #1e7e34;
     }
   </style>
 </head>
@@ -66,42 +98,50 @@
 
   <header>
     <h1>🛍 Магазин Абдурахмона</h1>
-    <p>Одежда, техника и товары из Турции</p>
+    <p>Одежда и товары из Турции 24/7</p>
   </header>
 
   <div class="cart" id="cart">🛒 Корзина: 0 товаров</div>
+  <button class="checkout" onclick="sendOrder()">Оформить заказ</button>
 
-  <div class="products" id="product-list">
-    <!-- Товары будут добавлены с JS -->
-  </div>
+  <div class="products" id="product-list"></div>
 
   <script>
     const products = [
-      { name: "Куртка", price: 120, img: "https://via.placeholder.com/300x200?text=Jacket" },
-      { name: "Кроссовки", price: 80, img: "https://via.placeholder.com/300x200?text=Shoes" },
-      { name: "Смарт-часы", price: 150, img: "https://via.placeholder.com/300x200?text=Smartwatch" },
+      { name: \"Куртка\", price: 120, img: \"https://via.placeholder.com/300x200?text=Куртка\" },
+      { name: \"Кроссовки\", price: 80, img: \"https://via.placeholder.com/300x200?text=Кроссовки\" },
+      { name: \"Смарт-часы\", price: 150, img: \"https://via.placeholder.com/300x200?text=Часы\" },
+      { name: \"Футболка\", price: 35, img: \"https://via.placeholder.com/300x200?text=Футболка\" },
     ];
 
-    let cartCount = 0;
+    let cart = [];
 
     function renderProducts() {
-      const list = document.getElementById("product-list");
-      products.forEach((item) => {
-        const card = document.createElement("div");
-        card.className = "product";
+      const list = document.getElementById(\"product-list\");
+      products.forEach((item, index) => {
+        const card = document.createElement(\"div\");
+        card.className = \"product\";
         card.innerHTML = `
-          <img src="${item.img}" alt="${item.name}" />
+          <img src=\"${item.img}\" alt=\"${item.name}\" />
           <h3>${item.name}</h3>
           <p>${item.price} $</p>
-          <button onclick="addToCart()">Добавить в корзину</button>
+          <button onclick=\"addToCart(${index})\">Добавить в корзину</button>
         `;
         list.appendChild(card);
       });
     }
 
-    function addToCart() {
-      cartCount++;
-      document.getElementById("cart").innerText = "🛒 Корзина: " + cartCount + " товаров";
+    function addToCart(index) {
+      cart.push(products[index]);
+      document.getElementById(\"cart\").innerText = \"🛒 Корзина: \" + cart.length + \" товаров\";
+    }
+
+    function sendOrder() {
+      if (cart.length === 0) return alert(\"Корзина пуста!\");
+      const text = encodeURIComponent(\"🛍 Новый заказ:\\n\" + cart.map(p => `• ${p.name} — ${p.price} $`).join(\"\\n\"));
+      const botUsername = \"your_bot_username\"; // замените на своего бота
+      const tgLink = `https://t.me/${botUsername}?start=${text}`;
+      window.open(tgLink, '_blank');
     }
 
     renderProducts();
