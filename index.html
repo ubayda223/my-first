@@ -2,151 +2,151 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Made in Turkey Shop</title>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TurkiyaModas</title>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap" rel="stylesheet">
   <style>
-    body { background-color: #f8f9fa; font-family: 'Segoe UI', sans-serif; }
-    .hero { background: #e3f2fd; padding: 40px 20px; text-align: center; }
-    .product-card { transition: transform 0.4s ease; }
-    .product-card:hover { transform: scale(1.03); }
-    .filter-btn.active { background-color: #0d6efd; color: white; }
-    .modal-footer button { min-width: 120px; }
+    body {
+      margin: 0;
+      font-family: 'Montserrat', sans-serif;
+      background-color: #121212;
+      color: #fff;
+    }
+    header {
+      background: #1f1f1f;
+      padding: 1rem 2rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.6);
+    }
+    header h1 {
+      margin: 0;
+      font-size: 1.5rem;
+    }
+    .container {
+      padding: 2rem;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 2rem;
+      animation: fadeIn 1s ease-in;
+    }
+    .product {
+      background: #1f1f1f;
+      padding: 1rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.4);
+      transition: transform 0.3s ease;
+    }
+    .product:hover {
+      transform: scale(1.05);
+    }
+    .product img {
+      width: 100%;
+      border-radius: 8px;
+    }
+    .product h3 {
+      margin: 0.5rem 0;
+    }
+    .product button {
+      background: #00bfa5;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    .product button:hover {
+      background: #00a08c;
+    }
+    footer {
+      text-align: center;
+      padding: 2rem;
+      background: #1a1a1a;
+      margin-top: 3rem;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .add-form {
+      margin: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+    .add-form input, .add-form textarea {
+      padding: 0.5rem;
+      border: none;
+      border-radius: 6px;
+    }
+    .add-form button {
+      background: #ff4081;
+    }
   </style>
 </head>
 <body>
+  <header>
+    <h1>TurkiyaModas</h1>
+    <p>🇹🇷 доставка в 🇹🇯</p>
+  </header>
 
-<div class="hero">
-  <h1>🛍️ TurkiyaModa</h1>
-  <p>Одежда и товары напрямую из Турции</p>
-</div>
+  <section class="add-form">
+    <h2>Добавить товар</h2>
+    <input type="text" id="name" placeholder="Название товара" />
+    <input type="text" id="price" placeholder="Цена" />
+    <input type="text" id="image" placeholder="URL изображения" />
+    <button onclick="addProduct()">Добавить</button>
+  </section>
 
-<div class="container my-4">
-  <!-- Поиск -->
-  <input type="text" id="searchInput" class="form-control mb-3" placeholder="Поиск товаров..." oninput="filterProducts()">
+  <main class="container" id="product-list"></main>
 
-  <!-- Фильтры -->
-  <div class="mb-4 text-center">
-    <button class="btn btn-outline-primary filter-btn active" onclick="filterCategory('all')">Все</button>
-    <button class="btn btn-outline-primary filter-btn" onclick="filterCategory('Одежда')">Одежда</button>
-    <button class="btn btn-outline-primary filter-btn" onclick="filterCategory('Обувь')">Обувь</button>
-    <button class="btn btn-outline-primary filter-btn" onclick="filterCategory('Аксессуары')">Аксессуары</button>
-  </div>
+  <footer>
+    <p>&copy; 2025 TurkiyaModas | Все права защищены</p>
+  </footer>
 
-  <!-- Каталог -->
-  <div class="row g-4" id="productList">
-    <!-- Примеры товаров -->
-  </div>
+  <script>
+    const tgUsername = "Ubayda_1507";
+    const waPhone = "992905746633";
 
-  <div class="mt-5">
-    <h3>🚚 Доставка и оплата</h3>
-    <p>Доставка по Таджикистан. Оплата при получении. Подлинные товары из Турции.</p>
-  </div>
-</div>
+    const products = [];
 
-<!-- Модальное окно заказа -->
-<div class="modal fade" id="orderModal" tabindex="-1" aria-hidden="true">
-  <div class="modal-dialog modal-dialog-centered">
-    <div class="modal-content text-center">
-      <div class="modal-header">
-        <h5 class="modal-title">Оформление заказа</h5>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-      </div>
-      <div class="modal-body">
-        <p id="orderItemName"></p>
-        <p>Выберите мессенджер для связи:</p>
-      </div>
-      <div class="modal-footer justify-content-center">
-        <a id="tgLink" target="_blank" class="btn btn-outline-primary">Telegram</a>
-        <a id="waLink" target="_blank" class="btn btn-outline-success">WhatsApp</a>
-      </div>
-    </div>
-  </div>
-</div>
+    function addProduct() {
+      const name = document.getElementById("name").value;
+      const price = document.getElementById("price").value;
+      const image = document.getElementById("image").value;
 
-<footer class="bg-dark text-white text-center p-3 mt-5">
-  <p>&copy; 2025 TurkiyaModa | Контакт: <a href="https://t.me/YourTelegramUsername" class="text-warning">@YourTelegramUsername</a></p>
-</footer>
-
-<!-- Bootstrap + JS -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-  const products = [
-    {
-      name: "Футболка мужская",
-      price: "900 сом",
-      image: "https://via.placeholder.com/300x200?text=Футболка",
-      category: "Одежда"
-    },
-    {
-      name: "Кроссовки женские",
-      price: "2500 сом",
-      image: "https://via.placeholder.com/300x200?text=Кроссовки",
-      category: "Обувь"
-    },
-    {
-      name: "Рюкзак кожаный",
-      price: "1800 сом",
-      image: "https://via.placeholder.com/300x200?text=Рюкзак",
-      category: "Аксессуары"
-    },
-    {
-      name: "Пальто мужское",
-      price: "4800 сом",
-      image: "https://via.placeholder.com/300x200?text=Пальто",
-      category: "Одежда"
-    },
-  ];
-
-  const tgUsername = "@Ubayda_1507"; // без @
-  const waPhone = "992905746633"; // формат без + (пример: 996xxx...)
-
-  const productList = document.getElementById("productList");
-  const searchInput = document.getElementById("searchInput");
-
-  function renderProducts(filtered = products) {
-    productList.innerHTML = "";
-    filtered.forEach((product, index) => {
-      const card = document.createElement("div");
-      card.className = "col-md-4 fade-in";
-      card.innerHTML = `
-        <div class="product-card p-3 bg-white rounded shadow-sm h-100 d-flex flex-column">
-          <img src="${product.image}" class="mb-2 rounded" alt="${product.name}">
-          <h5>${product.name}</h5>
-          <p>${product.price}</p>
-          <button class="btn btn-primary mt-auto" onclick="openOrderModal('${product.name}')">Заказать</button>
-        </div>`;
-      productList.appendChild(card);
-    });
-  }
-
-  function filterCategory(category) {
-    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-    event.target.classList.add('active');
-    if (category === "all") {
-      renderProducts();
-    } else {
-      const filtered = products.filter(p => p.category === category);
-      renderProducts(filtered);
+      if (name && price && image) {
+        products.push({ name, price, image });
+        renderProducts();
+        document.getElementById("name").value = "";
+        document.getElementById("price").value = "";
+        document.getElementById("image").value = "";
+      }
     }
-    searchInput.value = "";
-  }
 
-  function filterProducts() {
-    const query = searchInput.value.toLowerCase();
-    const filtered = products.filter(p => p.name.toLowerCase().includes(query));
-    renderProducts(filtered);
-  }
+    function renderProducts() {
+      const list = document.getElementById("product-list");
+      list.innerHTML = "";
+      products.forEach((p, i) => {
+        list.innerHTML += `
+          <div class="product">
+            <img src="${p.image}" alt="${p.name}" />
+            <h3>${p.name}</h3>
+            <p>${p.price} сомони</p>
+            <button onclick="order('${p.name}')">Заказать</button>
+          </div>
+        `;
+      });
+    }
 
-  function openOrderModal(itemName) {
-    document.getElementById("orderItemName").innerText = itemName;
-    document.getElementById("tgLink").href = `https://t.me/${tgUsername}?text=Здравствуйте! Хочу заказать: ${encodeURIComponent(itemName)}`;
-    document.getElementById("waLink").href = `https://wa.me/${waPhone}?text=Здравствуйте! Хочу заказать: ${encodeURIComponent(itemName)}`;
-    new bootstrap.Modal(document.getElementById('orderModal')).show();
-  }
-
-  // Плавное появление
-  document.addEventListener("DOMContentLoaded", () => renderProducts());
-</script>
+    function order(name) {
+      const message = encodeURIComponent(`Здравствуйте! Хочу заказать: ${name}`);
+      const url = confirm("Связаться через Telegram? Нажмите 'Отмена' для WhatsApp.")
+        ? `https://t.me/${tgUsername}?text=${message}`
+        : `https://wa.me/${waPhone}?text=${message}`;
+      window.open(url, "_blank");
+    }
+  </script>
 </body>
 </html>
